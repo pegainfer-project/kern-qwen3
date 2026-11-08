@@ -21,6 +21,7 @@ cargo install --git https://github.com/pegainfer-project/kern \
   --rev 248e7aa3ab782d9c1cc80c4e3519dd2368fe45d1 --locked kern-run
 
 git submodule update --init third_party/pegainfer third_party/flashinfer
+git -C third_party/pegainfer submodule update --init pegainfer-kernels/third_party/flashinfer
 uv run python scripts/build.py --sm sm_120 --nvcc /usr/local/cuda/bin/nvcc
 uv run python scripts/gen.py --checkpoint /path/to/Qwen3-4B \
   --kernels build/sm_120 --out out/qwen3-4b \
@@ -31,8 +32,8 @@ kern run --config out/qwen3-4b/kern.toml \
 ```
 
 Use `--sm all` to compile every architecture in `kernels.toml`, or pass several
-SM names. Build outputs contain four cubins plus `build.json` with compiler version,
-upstream revisions, module SHA-256 hashes, template symbols and sampling storage sizes. The generator verifies those hashes
+SM names. Build outputs contain eight cubins plus `build.json` with compiler version,
+upstream revisions, module SHA-256 hashes, template symbols, attention parameter layouts, and sampling storage sizes. The generator verifies those hashes
 and bundles the cubins with `model.json` and a local `kern.toml`. Generated output
 and checkpoint paths are ignored by Git. A bundle is specific to one SM; select
 the matching bundle on each machine.
@@ -79,11 +80,14 @@ require vocabulary size divisible by four, as in the supported Qwen3 checkpoints
 
 ## Organization and execution
 
-- `source/qwen3.cu`: RMSNorm, RoPE, embedding, paged cache writes, causal attention,
+- `source/qwen3.cu`: RMSNorm, RoPE, embedding, paged cache writes,
   and greedy argmax, all with flat pointer/scalar ABIs.
 - `scripts/build.py`: extracts pegainfer's `add_kernel` and `silu_mul_kernel` from
   the pinned Git object, adds C linkage, and compiles their unchanged bodies.
-  FlashInfer v0.7.2 is a separate pinned submodule; nested pegainfer submodules are unnecessary.
+  Sampling uses the separate FlashInfer v0.7.2 submodule. Attention uses pegainfer's pinned nested FlashInfer submodule.
+- `source/attention.cu`, `scripts/attention.py`: FlashInfer causal paged prefill,
+  Split-KV decode, and merge; compiler-probed aggregate ABIs.
+- `source/attention_plan.cu`: per-forward GPU page-table and split-plan preparation.
 - `scripts/gen.py`: reads layer/head/MLP sizes, epsilon, RoPE base, vocabulary,
   context limit, and tied embeddings from the checkpoint; binds original
   safetensors names and emits kern schema v7.
@@ -97,10 +101,34 @@ BF16 materialization boundaries used by Transformers. The cache is
 `[physical token slot, K/V, KV head, dimension]`, with 16 slots per page.
 Each attention row reads its own sequence's page table and causal prefix.
 
-Attention is a portable baseline: one warp per query/head, FP32 online softmax,
-serial traversal of the visible cache. Long-context throughput is a known limit.
-There is no claim of performance parity with pegainfer's FlashInfer attention.
-No architecture-specific fast path or multi-GPU execution is included.
+Attention uses the FlashInfer device routines behind pegainfer's paged attention
+launchers. Prefill uses tensor-core tiles of 64 packed query rows; decode uses
+fixed 64-token KV splits followed by FlashInfer's variable-length merge. Supported
+GQA ratios are 1, 2, 4 and 8, with head dimensions 64, 128 and 256. Metadata is
+prepared once per forward on the GPU and reused by every layer. No model-specific
+runtime changes or host planner callbacks are required.
+
+The default generated limits remain 4096 context tokens, 256 prefill rows, and
+32 decode sequences. Regenerate with `--context 40960 --max-tokens 1024` for a
+Qwen3-4B bundle configured for 40K context and 1024-token chunks. The checkpoint's
+own limit is enforced. The 40K configuration is not a completed long-context
+numerical or serving gate; measured attention correctness currently covers 8K.
+
+With kern-serve built from the runtime repository:
+
+```sh
+kern-serve --manifest out/qwen3-4b/model.json --kernels out/qwen3-4b/kernels \
+  --weights /path/to/Qwen3-4B --served-model-name qwen3-4b \
+  --gpu 0 --port 8000 --chunk 256 --capacity 4096 --max-seqs 8
+```
+
+`--capacity` is the KV token pool shared by all requests; it is separate from the
+per-request context bound and the concurrency limit. `--chunk` can reduce the
+manifest's prefill bound but cannot raise it. For the regenerated 40K bundle,
+use `--chunk 1024 --capacity 40960` if device memory permits.
+
+See [attention results](results/attention.md) for measured before/after GPU times
+and the numerical gates. No HTTP TTFT/TPOT or cross-engine speed claim is made.
 
 ## Validation
 

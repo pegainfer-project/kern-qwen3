@@ -13,6 +13,7 @@ import math
 import shutil
 from pathlib import Path
 
+import attention
 import sampling
 
 
@@ -50,7 +51,17 @@ def geometry(config, context):
     return config
 
 
-def manifest(config, modules, sampling_metadata, sampling_target, *, context=4096, tokens=256, seqs=32):
+def manifest(
+    config,
+    modules,
+    sampling_metadata,
+    sampling_target,
+    attention_metadata,
+    *,
+    context=4096,
+    tokens=256,
+    seqs=32,
+):
     c = geometry(config, context)
     if tokens < seqs or seqs < 1 or tokens > context:
         raise ValueError("expected 1 <= max-seqs <= max-tokens <= context")
@@ -150,21 +161,16 @@ def manifest(config, modules, sampling_metadata, sampling_target, *, context=409
         ["tokens", 1, 1],
         extra=[i(kvdim)],
     )
-    op(
-        "attention",
-        "attention",
-        [
-            "out buffer<bf16>",
-            "in buffer<bf16>",
-            "in state",
-            "in buffer<i32>",
-            "in buffer<i32>",
-            "in buffer<i32>",
-            "i32",
-        ],
-        ["tokens", heads, 1],
-        extra=[i(context // 16), i(heads), i(kvheads), i(d)],
-        block=32,
+    plan, decode_attention, prefill_attention = attention.configure(
+        buffers,
+        ops,
+        attention_metadata,
+        dim=d,
+        heads=heads,
+        kvheads=kvheads,
+        context=context,
+        tokens=tokens,
+        seqs=seqs,
     )
     op(
         "add",
@@ -182,7 +188,7 @@ def manifest(config, modules, sampling_metadata, sampling_target, *, context=409
     )
     ops["sample"] = sampling.op(vocab, seqs, sampling_metadata, sampling_target)
 
-    calls = []
+    calls = [plan]
 
     def call(label, name, *args):
         calls.append({"label": label, "op": name, "args": list(args)})
@@ -209,14 +215,12 @@ def manifest(config, modules, sampling_metadata, sampling_target, *, context=409
         call(f"{label}.cache", "cache", b("k"), b("v"), s(f"kv.{layer}"), b("slots"))
         call(
             f"{label}.attention",
-            "attention",
+            "attention_decode",
             b("attention"),
             b("q"),
             s(f"kv.{layer}"),
-            b("pages"),
-            b("lengths"),
-            b("offsets"),
-            groups,
+            {"state": f"kv.{layer}", "offset": kvdim * 2},
+            *decode_attention,
         )
         gemm(f"{label}.o_proj", "attention", "x", f"{p}.self_attn.o_proj.weight", h, qdim)
         call(f"{label}.attention_residual", "add", b("h"), b("x"), b("h"), {"expr": {"mul": ["tokens", h]}})
@@ -229,6 +233,10 @@ def manifest(config, modules, sampling_metadata, sampling_target, *, context=409
         gemm(f"{label}.down_proj", "act", "x", f"{p}.mlp.down_proj.weight", h, f)
         call(f"{label}.residual", "add", b("h"), b("x"), b("h"), {"expr": {"mul": ["tokens", h]}})
     prefill = copy.deepcopy(calls)
+    for item in prefill:
+        if item["op"] == "attention_decode":
+            item["op"] = "attention_prefill"
+            item["args"] = item["args"][:4] + prefill_attention
     call("final_norm", "norm", b("x"), b("h"), weight("model.norm.weight", [h]))
     head = "model.embed_tokens.weight" if c.get("tie_word_embeddings") else "lm_head.weight"
     # Reuse the embedding buffer for tied checkpoints rather than allocating it twice.
@@ -257,8 +265,20 @@ def generate(checkpoint, kernels, out, context, tokens, seqs, gpu=0, sampling_sm
     build = json.loads((kernels / "build.json").read_text())
     target = sampling.target(build["architecture"], gpu, sampling_sms, sampling_smem)
     m = manifest(
-        config, build["modules"], build["sampling"], target, context=context, tokens=tokens, seqs=seqs
+        config,
+        build["modules"],
+        build["sampling"],
+        target,
+        build["attention"],
+        context=context,
+        tokens=tokens,
+        seqs=seqs,
     )
+    m["modules"] = {
+        k: v
+        for k, v in m["modules"].items()
+        if not k.startswith("attention_") or k in ("attention_plan", f"attention_{config['head_dim']}")
+    }
     build["sampling_target"] = target
     out.mkdir(parents=True, exist_ok=True)
     bundle = out / "kernels"

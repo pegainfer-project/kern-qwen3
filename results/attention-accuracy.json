@@ -1,0 +1,89 @@
+{
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "torch": "2.15.0+cu132",
+  "checkpoint": "Qwen3-4B",
+  "transformers": "5.22.2",
+  "threshold": 0.01,
+  "results": [
+    {
+      "prompt": 0,
+      "chunk": 16,
+      "steps": 8,
+      "mean_kl": 0.0034461477771401405,
+      "max_kl": 0.012168312445282936,
+      "top1_matches": 7,
+      "mismatch_margins": [
+        0.125
+      ]
+    },
+    {
+      "prompt": 0,
+      "chunk": 256,
+      "steps": 8,
+      "mean_kl": 0.0034461477771401405,
+      "max_kl": 0.012168312445282936,
+      "top1_matches": 7,
+      "mismatch_margins": [
+        0.125
+      ]
+    },
+    {
+      "prompt": 1,
+      "chunk": 16,
+      "steps": 8,
+      "mean_kl": 0.00042630170355550945,
+      "max_kl": 0.001438324456103146,
+      "top1_matches": 7,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "prompt": 1,
+      "chunk": 256,
+      "steps": 8,
+      "mean_kl": 0.00042630170355550945,
+      "max_kl": 0.001438324456103146,
+      "top1_matches": 7,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "prompt": 2,
+      "chunk": 16,
+      "steps": 8,
+      "mean_kl": 0.0006250452715903521,
+      "max_kl": 0.002241808921098709,
+      "top1_matches": 8,
+      "mismatch_margins": []
+    },
+    {
+      "prompt": 2,
+      "chunk": 256,
+      "steps": 8,
+      "mean_kl": 0.0006250452715903521,
+      "max_kl": 0.002241808921098709,
+      "top1_matches": 8,
+      "mismatch_margins": []
+    },
+    {
+      "prompt": 3,
+      "chunk": 16,
+      "steps": 8,
+      "mean_kl": 0.0008155495161190629,
+      "max_kl": 0.0033905445598065853,
+      "top1_matches": 8,
+      "mismatch_margins": []
+    },
+    {
+      "prompt": 3,
+      "chunk": 256,
+      "steps": 8,
+      "mean_kl": 0.0006160467164590955,
+      "max_kl": 0.0026514308992773294,
+      "top1_matches": 8,
+      "mismatch_margins": []
+    }
+  ]
+}

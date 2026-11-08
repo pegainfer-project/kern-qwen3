@@ -1,0 +1,151 @@
+{
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "threshold": 0.01,
+  "results": [
+    {
+      "groups": 1,
+      "step": 0,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 1,
+      "step": 1,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 1,
+      "step": 2,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 3,
+      "step": 0,
+      "mean_kl": 0.0004860383924096823,
+      "max_kl": 0.0005213570548221469,
+      "top1_matches": 2,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "groups": 3,
+      "step": 1,
+      "mean_kl": 0.001385236973874271,
+      "max_kl": 0.001964038237929344,
+      "top1_matches": 3,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 3,
+      "step": 2,
+      "mean_kl": 0.0006432224763557315,
+      "max_kl": 0.000811477773822844,
+      "top1_matches": 3,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 17,
+      "step": 0,
+      "mean_kl": 0.0004359730228316039,
+      "max_kl": 0.0006084482884034514,
+      "top1_matches": 17,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 17,
+      "step": 1,
+      "mean_kl": 0.000422038632677868,
+      "max_kl": 0.0013384181074798107,
+      "top1_matches": 16,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "groups": 17,
+      "step": 2,
+      "mean_kl": 0.0005892213666811585,
+      "max_kl": 0.0019047409296035767,
+      "top1_matches": 17,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 32,
+      "step": 0,
+      "mean_kl": 0.0005562135484069586,
+      "max_kl": 0.0018373189959675074,
+      "top1_matches": 32,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 32,
+      "step": 1,
+      "mean_kl": 0.0006701817619614303,
+      "max_kl": 0.002154724672436714,
+      "top1_matches": 31,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "groups": 32,
+      "step": 2,
+      "mean_kl": 0.0006034655380062759,
+      "max_kl": 0.0019870793912559748,
+      "top1_matches": 32,
+      "mismatch_margins": []
+    }
+  ],
+  "sampling": {
+    "groups": 32,
+    "temperature": 0.8,
+    "top_k": 20,
+    "top_p": 0.9,
+    "min_p": 0.05,
+    "replay_equal": true,
+    "different_from_greedy": 9,
+    "tokens": [
+      279,
+      13,
+      1273,
+      543,
+      314,
+      220,
+      537,
+      279,
+      279,
+      374,
+      15,
+      1077,
+      15,
+      3681,
+      15,
+      279,
+      15,
+      1077,
+      558,
+      498,
+      15,
+      7523,
+      4977,
+      16,
+      264,
+      594,
+      8592,
+      4977,
+      271,
+      323,
+      405,
+      15
+    ]
+  }
+}

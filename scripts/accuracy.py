@@ -27,20 +27,28 @@ def check(args):
     tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, local_files_only=True)
     vocab = json.loads((Path(args.checkpoint) / "config.json").read_text())["vocab_size"]
     traces = []
-    for number, prompt in enumerate(PROMPTS):
+    prompts = json.loads(args.prompt_file.read_text()) if args.prompt_file else PROMPTS
+    for number, prompt in enumerate(prompts):
         for chunk in args.chunks:
             directory = args.out / f"prompt{number}-chunk{chunk}"
+            directory.mkdir(parents=True, exist_ok=True)
+            config_path = directory / "input.toml"
+            config_path.write_text(
+                "[targets.qwen3]\n"
+                + f"manifest = {json.dumps(str((args.bundle / 'model.json').resolve()))}\n"
+                + f"kernels = {json.dumps(str((args.bundle / 'kernels').resolve()))}\n"
+                + f"weights = [{json.dumps(str(Path(args.checkpoint).resolve()))}]\n"
+                + f"[run]\nprompt = {json.dumps(prompt, ensure_ascii=False)}\n"
+            )
             command = [
                 str(args.kern),
                 "run",
                 "--config",
-                str(args.bundle / "kern.toml"),
-                "--prompt",
-                prompt,
+                str(config_path),
                 "--steps",
                 str(args.steps),
                 "--capacity",
-                "1024",
+                str(args.capacity),
                 "--chunk",
                 str(chunk),
                 "--probe-dir",
@@ -66,7 +74,10 @@ def check(args):
             traces.append((number, chunk, prompt, tokens, torch.stack(logits).float()))
     model = (
         AutoModelForCausalLM.from_pretrained(
-            args.checkpoint, dtype=torch.bfloat16, attn_implementation="eager", local_files_only=True
+            args.checkpoint,
+            dtype=torch.bfloat16,
+            attn_implementation=args.reference_attention,
+            local_files_only=True,
         )
         .to("cuda")
         .eval()
@@ -77,8 +88,15 @@ def check(args):
             ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda")
             reference = []
             past = None
+            # Bound reference activations too: a long-prompt oracle must fit on
+            # the same device as the candidate, without a second model copy.
+            if ids.shape[1] > 2048:
+                for part in ids[:, :-1].split(1024, dim=1):
+                    output = model(input_ids=part, past_key_values=past, use_cache=True, logits_to_keep=1)
+                    past = output.past_key_values
+                ids = ids[:, -1:]
             for step in range(args.steps):
-                output = model(input_ids=ids, past_key_values=past, use_cache=True)
+                output = model(input_ids=ids, past_key_values=past, use_cache=True, logits_to_keep=1)
                 reference.append(output.logits[0, -1].float().cpu())
                 past = output.past_key_values
                 ids = torch.tensor([[tokens[step]]], device="cuda")
@@ -122,5 +140,8 @@ if __name__ == "__main__":
     parser.add_argument("--out", type=Path, default=Path("out/accuracy"))
     parser.add_argument("--steps", type=int, default=8)
     parser.add_argument("--chunks", type=int, nargs="+", default=[16, 256])
+    parser.add_argument("--prompt-file", type=Path, help="JSON list of prompts")
+    parser.add_argument("--capacity", type=int, default=1024)
+    parser.add_argument("--reference-attention", choices=["eager", "sdpa"], default="eager")
     parser.add_argument("--kl", type=float, default=0.01)
     check(parser.parse_args())

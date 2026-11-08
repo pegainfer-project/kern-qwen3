@@ -57,6 +57,32 @@ def build(architectures, nvcc):
         check=True,
     )
     sizes = json.loads(subprocess.check_output([str(metadata)], text=True))
+    attention_include = "third_party/pegainfer/pegainfer-kernels/third_party/flashinfer/include"
+    attention_revision = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT / attention_include / "..", text=True
+    ).strip()
+    pinned = subprocess.check_output(
+        ["git", "ls-tree", "HEAD", "pegainfer-kernels/third_party/flashinfer"], cwd=path, text=True
+    ).split()[2]
+    if attention_revision != pinned:
+        raise ValueError("pegainfer's FlashInfer submodule is not at its pinned revision")
+    attention = {}
+    for dim in (64, 128, 256):
+        probe = ROOT / f"build/attention_metadata_{dim}"
+        subprocess.run(
+            [
+                nvcc,
+                "-std=c++17",
+                f"-DKERN_HEAD_DIM={dim}",
+                "-I" + attention_include,
+                "source/attention_metadata.cu",
+                "-o",
+                str(probe),
+            ],
+            cwd=ROOT,
+            check=True,
+        )
+        attention[str(dim)] = json.loads(subprocess.check_output([str(probe)], text=True))
     for sm in architectures:
         out = ROOT / "build" / sm
         out.mkdir(parents=True, exist_ok=True)
@@ -66,6 +92,8 @@ def build(architectures, nvcc):
             ("elementwise", "build/upstream/elementwise.cu"),
             ("sampling", "source/sampling.cu"),
             ("sample_glue", "source/sample_glue.cu"),
+            ("attention_plan", "source/attention_plan.cu"),
+            *((f"attention_{dim}", "source/attention.cu") for dim in (64, 128, 256)),
         ):
             target = out / f"{name}.cubin"
             command = [
@@ -80,6 +108,9 @@ def build(architectures, nvcc):
                 "-o",
                 str(target.relative_to(ROOT)),
             ]
+            if src == "source/attention.cu":
+                command[command.index("-I" + include)] = "-I" + attention_include
+                command.insert(1, f"-DKERN_HEAD_DIM={name.split('_')[1]}")
             subprocess.run(command, cwd=ROOT, check=True)
             digest = hashlib.sha256(target.read_bytes()).hexdigest()
             modules[name] = {"source": target.name, "sha256": digest}
@@ -111,6 +142,19 @@ def build(architectures, nvcc):
                 }
         if len(entries) != 4:
             raise ValueError(f"expected four sampling entries, got {entries}")
+        for dim in (64, 128, 256):
+            usage = subprocess.check_output(
+                [
+                    str(Path(nvcc).resolve().with_name("cuobjdump")),
+                    "-res-usage",
+                    str(out / f"attention_{dim}.cubin"),
+                ],
+                text=True,
+            )
+            merge = re.findall(r"Function ([^:]*PersistentVariableLengthMergeStatesKernel[^:]*):", usage)
+            if len(merge) != 1:
+                raise ValueError(f"expected one FlashInfer merge entry: {merge}")
+            attention[str(dim)]["merge_entry"] = merge[0]
         (out / "build.json").write_text(
             json.dumps(
                 {
@@ -118,6 +162,7 @@ def build(architectures, nvcc):
                     "compiler": compiler,
                     "upstream": revision,
                     "modules": modules,
+                    "attention": {"revision": attention_revision, "variants": attention},
                     "sampling": {
                         "sizes": sizes,
                         "entries": entries,

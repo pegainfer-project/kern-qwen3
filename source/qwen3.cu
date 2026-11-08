@@ -62,40 +62,6 @@ extern "C" __global__ void cache_write(const B* k, const B* v, B* cache,
   }
 }
 
-// One warp per (query, head), with a causal bound derived from packed offsets.
-// This deliberately small baseline trades throughput for broad SM coverage.
-extern "C" __global__ void attention(B* out, const B* q, const B* cache,
-    const int* pages, const int* lengths, const int* offsets,
-    int groups, int page_width, int qheads, int kvheads, int dim) {
-  int row = blockIdx.x, head = blockIdx.y, lane = threadIdx.x;
-  int seq = 0;
-  while (seq + 1 < groups && row >= offsets[seq + 1]) ++seq;
-  int end = lengths[seq] - (offsets[seq + 1] - row - 1);
-  int kh = head / (qheads / kvheads);
-  float query[8], acc[8];
-  for (int j = 0; j < dim / 32; ++j) {
-    query[j] = float(q[(int64_t(row) * qheads + head) * dim + j * 32 + lane]);
-    acc[j] = 0.f;
-  }
-  float maximum = -INFINITY, denominator = 0.f;
-  for (int p = 0; p < end; ++p) {
-    int page = pages[seq * page_width + p / 16];
-    int64_t base = (int64_t(page) * 16 + p % 16) * (2 * kvheads * dim) + kh * dim;
-    float dot = 0.f;
-    for (int j = 0; j < dim / 32; ++j)
-      dot += query[j] * float(cache[base + j * 32 + lane]);
-    dot = warp_sum(dot) * rsqrtf(float(dim));
-    float next = fmaxf(maximum, dot);
-    float old = expf(maximum - next), probability = expf(dot - next);
-    denominator = denominator * old + probability;
-    for (int j = 0; j < dim / 32; ++j)
-      acc[j] = acc[j] * old + probability * float(cache[base + kvheads * dim + j * 32 + lane]);
-    maximum = next;
-  }
-  for (int j = 0; j < dim / 32; ++j)
-    out[(int64_t(row) * qheads + head) * dim + j * 32 + lane] = B(acc[j] / denominator);
-}
-
 extern "C" __global__ void embedding(const int64_t* ids, const B* table,
                                      B* out, int hidden, int vocab) {
   int row = blockIdx.x;

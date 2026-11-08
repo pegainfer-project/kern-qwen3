@@ -18,3 +18,13 @@ FlashInfer v0.7.2, revision d84335d8c54e0c8f9f7e22faa15c7e34a58abf94,
 is an unmodified Apache-2.0 submodule. Its kernels are instantiated from headers.
 https://github.com/flashinfer-ai/flashinfer
 See third_party/flashinfer/LICENSE.
+
+Attention uses pegainfer's pinned FlashInfer revision
+19f1a41e6b21f0c422d775e377b6fdf9a1fc9d23 (Apache-2.0), instantiated from the
+unmodified headers under third_party/pegainfer/pegainfer-kernels/third_party/flashinfer.
+source/attention.cu and scripts/attention.py adapt the launch contracts in
+pegainfer-kernels/csrc/shared/paged_launch.cuh: BF16 causal paged prefill,
+partitioned paged decode, and FlashInfer's variable-length state merge.
+The build probes the actual parameter structs and shared-storage types;
+source/attention_plan.cu prepares page and split metadata on the GPU.
+See that FlashInfer submodule's LICENSE and upstream notices.

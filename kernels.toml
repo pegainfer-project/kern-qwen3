@@ -15,3 +15,8 @@ schema_version = 7
 revision = "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
 path = "third_party/flashinfer"
 license = "Apache-2.0"
+
+[upstreams.flashinfer_attention]
+revision = "19f1a41e6b21f0c422d775e377b6fdf9a1fc9d23"
+path = "third_party/pegainfer/pegainfer-kernels/third_party/flashinfer"
+license = "Apache-2.0"
