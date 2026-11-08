@@ -1,0 +1,12 @@
+# CUDA BF16 requires SM80 or later. Each target gets its own cubins and hashes.
+architectures = ["sm_80", "sm_86", "sm_87", "sm_88", "sm_89", "sm_90", "sm_100", "sm_103", "sm_110", "sm_120", "sm_121"]
+
+[upstreams.pegainfer]
+revision = "8cdf53c4435e94e06767a38b501485407db97b22"
+path = "third_party/pegainfer"
+license = "Apache-2.0"
+
+[runtime]
+repository = "https://github.com/pegainfer-project/kern"
+revision = "248e7aa3ab782d9c1cc80c4e3519dd2368fe45d1"
+schema_version = 7

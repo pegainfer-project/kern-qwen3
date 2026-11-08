@@ -1,0 +1,15 @@
+[project]
+name = "kern-qwen3"
+version = "0.1.0"
+description = "Dense Qwen3 manifests and portable CUDA kernels for kern"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+test = ["torch", "transformers>=4.51"]
+
+[tool.uv]
+environments = ["sys_platform == 'linux'"]
+
+[tool.ruff]
+line-length = 110

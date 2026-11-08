@@ -1,0 +1,104 @@
+{
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "threshold": 0.01,
+  "results": [
+    {
+      "groups": 1,
+      "step": 0,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 1,
+      "step": 1,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 1,
+      "step": 2,
+      "mean_kl": 0.0,
+      "max_kl": 0.0,
+      "top1_matches": 1,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 3,
+      "step": 0,
+      "mean_kl": 0.0008229126688092947,
+      "max_kl": 0.0011759826447814703,
+      "top1_matches": 2,
+      "mismatch_margins": [
+        0.0
+      ]
+    },
+    {
+      "groups": 3,
+      "step": 1,
+      "mean_kl": 0.0008344108937308192,
+      "max_kl": 0.0013987026177346706,
+      "top1_matches": 3,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 3,
+      "step": 2,
+      "mean_kl": 0.000668014632537961,
+      "max_kl": 0.0013125359546393156,
+      "top1_matches": 3,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 17,
+      "step": 0,
+      "mean_kl": 0.0005118707777000964,
+      "max_kl": 0.0015301983803510666,
+      "top1_matches": 17,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 17,
+      "step": 1,
+      "mean_kl": 0.0006520961178466678,
+      "max_kl": 0.002097431570291519,
+      "top1_matches": 17,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 17,
+      "step": 2,
+      "mean_kl": 0.0007521567167714238,
+      "max_kl": 0.0026935571804642677,
+      "top1_matches": 17,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 32,
+      "step": 0,
+      "mean_kl": 0.0005849481094628572,
+      "max_kl": 0.0014834338799118996,
+      "top1_matches": 32,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 32,
+      "step": 1,
+      "mean_kl": 0.0007018820033408701,
+      "max_kl": 0.0021352428011596203,
+      "top1_matches": 32,
+      "mismatch_margins": []
+    },
+    {
+      "groups": 32,
+      "step": 2,
+      "mean_kl": 0.0006450313376262784,
+      "max_kl": 0.0024447310715913773,
+      "top1_matches": 32,
+      "mismatch_margins": []
+    }
+  ]
+}

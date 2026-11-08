@@ -1,0 +1,9 @@
+kern-qwen3
+
+The generated elementwise CUDA module contains add_kernel and silu_mul_kernel
+from pegainfer, pegainfer-kernels/csrc/shared/elementwise.cu, revision
+8cdf53c4435e94e06767a38b501485407db97b22, licensed under Apache-2.0.
+https://github.com/pegainfer-project/pegainfer
+
+The build adds extern "C" linkage and a standalone CUDA BF16 include. Function
+bodies are unchanged. See third_party/pegainfer/LICENSE and its upstream notices.

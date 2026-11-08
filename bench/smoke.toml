@@ -1,0 +1,12 @@
+samples = 12
+seed = 24301
+
+[[sweep]]
+groups = [1, 4, 32]
+rows = [1]
+context = [128, 512]
+
+[[sweep]]
+groups = [1]
+rows = [16, 128]
+context = [0]
