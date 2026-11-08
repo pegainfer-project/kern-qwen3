@@ -1,0 +1,120 @@
+{
+  "same_seed_equal": true,
+  "different_seed_changed": true,
+  "sequential": [
+    {
+      "seed": 123,
+      "temperature": 0.8,
+      "text": " 5 letters, starts with 'C' and ends with 'Y' -",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "temperature": 0.8,
+      "text": " 5 letters, starts with 'C' and ends with 'Y' -",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    {
+      "seed": 124,
+      "temperature": 0.8,
+      "text": " 3 letters, all consonants, and not a real word. Also,",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    }
+  ],
+  "concurrent": [
+    {
+      "seed": 0,
+      "temperature": 0,
+      "text": " 3 letters, no numbers, no symbols, all lowercase, and the name",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "temperature": 0.8,
+      "text": " 3 letters, and the name should be as unique as possible. Maybe use",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "temperature": 0,
+      "text": " 3 letters, no numbers, no symbols, all lowercase, and the name",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    },
+    {
+      "seed": 9,
+      "temperature": 1.1,
+      "text": " 3-5 letters. Needs to be catchy, easy to pronounce, and",
+      "usage": {
+        "prompt_tokens": 10,
+        "total_tokens": 26,
+        "completion_tokens": 16,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      }
+    }
+  ]
+}

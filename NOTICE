@@ -7,3 +7,14 @@ https://github.com/pegainfer-project/pegainfer
 
 The build adds extern "C" linkage and a standalone CUDA BF16 include. Function
 bodies are unchanged. See third_party/pegainfer/LICENSE and its upstream notices.
+
+Sampling manifest wiring, template instantiations and glue are adapted from kern,
+revision 248e7aa3ab782d9c1cc80c4e3519dd2368fe45d1 (Apache-2.0). The adapter
+uses build-derived storage sizes and target GPU resources, and rejects an invalid
+FlashInfer sample instead of returning an invalid token.
+https://github.com/pegainfer-project/kern
+
+FlashInfer v0.7.2, revision d84335d8c54e0c8f9f7e22faa15c7e34a58abf94,
+is an unmodified Apache-2.0 submodule. Its kernels are instantiated from headers.
+https://github.com/flashinfer-ai/flashinfer
+See third_party/flashinfer/LICENSE.

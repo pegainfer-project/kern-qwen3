@@ -39,6 +39,11 @@ def check(args):
         rt = kern.Runtime(str(manifest), str(args.bundle / "kernels"), [str(args.checkpoint)], 0)
     rt.bind_host({name: host_region(t) for name, t in caches.items()})
     buffers = {name: region(rt, m, name) for name in m["buffers"] if m["buffers"][name]["kind"] != "weight"}
+    buffers["temperature"].zero_()
+    buffers["top_k"].zero_()
+    buffers["top_p"].fill_(1)
+    buffers["min_p"].zero_()
+    buffers["seed"].zero_()
     pages = (torch.randperm(count - 1, device="cuda") + 1).to(torch.int32).view(maximum, 4)
     prefixes = [torch.randint(10, 10000, (2 + seq % 29,), device="cuda") for seq in range(maximum)]
 
@@ -90,10 +95,44 @@ def check(args):
             if not torch.isfinite(kl).all() or kl.max().item() > args.kl:
                 raise RuntimeError("batched/singleton logits disagree")
             current[:groups] = next_ids
+    # Exercise the same complete forward with non-greedy per-sequence fills.
+    buffers["temperature"].fill_(0.8)
+    buffers["top_k"].fill_(20)
+    buffers["top_p"].fill_(0.9)
+    buffers["min_p"].fill_(0.05)
+    buffers["seed"].copy_(torch.arange(maximum, device="cuda") + 123)
+    positions = torch.tensor([len(prefixes[j]) + 3 for j in range(maximum)], device="cuda")
+    variables = stage(list(range(maximum)), current, positions, list(range(maximum + 1)))
+    rt.run("decode_batch", variables)
+    sampled = buffers["next_token"][:maximum].clone()
+    scores = buffers["logits"][:maximum].float().clone()
+    rt.run("decode_batch", variables)
+    torch.testing.assert_close(buffers["next_token"][:maximum], sampled, rtol=0, atol=0)
+    # The complete chain's distribution and filter boundaries are checked in test_sampling.py.
+    selected = scores.gather(1, sampled[:, None]).squeeze(1)
+    if not (selected >= scores.topk(20, dim=-1).values[:, -1]).all():
+        raise RuntimeError("full-model sample escaped the top-k set")
+    stochastic = {
+        "groups": maximum,
+        "temperature": 0.8,
+        "top_k": 20,
+        "top_p": 0.9,
+        "min_p": 0.05,
+        "replay_equal": True,
+        "different_from_greedy": (sampled != scores.argmax(-1)).sum().item(),
+        "tokens": sampled.cpu().tolist(),
+    }
+    print(json.dumps({"sampling": stochastic}), flush=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
         json.dumps(
-            {"device": torch.cuda.get_device_name(), "threshold": args.kl, "results": results}, indent=2
+            {
+                "device": torch.cuda.get_device_name(),
+                "threshold": args.kl,
+                "results": results,
+                "sampling": stochastic,
+            },
+            indent=2,
         )
         + "\n"
     )

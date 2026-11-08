@@ -1,0 +1,563 @@
+[
+  {
+    "architecture": "sm_100",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "6684b0aca98d246486b1b687460a47a1140a71d6a3608c1effd17600efcd6613"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "4a450da7c62aa9297e41f8b962539bb2087718cba0c6248071f610646b1cec56"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "57cdecafe0b690083d9aa877bcb570a030a78186ad9ddd99bf50102c6907de6d"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "7a546cf2c3538c4e96efcd37fa73c455f8ccebaac37e15bf3986179b4657ab5f"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub17_V_300303_SM_100018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub17_V_300303_SM_100020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_103",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "aec03fe484db6aaa2d7c6529b9dcd0f5abc933a751935fe1e3fe4cbae97e0f2d"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "153a9c658df6b6c07db5fe432266923e3382cebc0d535c0c4daa6ce454675a2d"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "a5e02d3a837d26f020b5db546f85ce5f7cc6d06f944a1b1a07fa07efcb294f7f"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "c6e7581475e8a34889ffb02c50cedef7bf330e8ab1cafd8282c1f284fc8230a8"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub17_V_300303_SM_103018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub17_V_300303_SM_103020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_110",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "1bf8231d2847a55d6ead5fbddc0a20cce24f8f6214714623c1836ea9ad11ad58"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "df5b413951b29cfca3d360736c25a89a7f80cf8c95255fece92715b3cfed9686"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "96f64265c8965921dd6a47ec2e1e9cf5ef553fdaf92353759e9a8057ff671c0d"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "3c8bc48ac7b61652652ff4043a57136a540a1e5ca2d0c232f3f9ff0d514d678e"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub17_V_300303_SM_110018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub17_V_300303_SM_110020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_120",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "d93bec2ee6309c931efb8e2d73ee5f42e580f211bb75e12b670ecbcf578499fc"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "fbf1da9d9cc026c50843979ad22db381a1bcc96b4decc58a2f04925155d69325"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "1489211ed033ad0e364c714d17d3d7f00a94251d88acf91d4c3ff49fc3d7faff"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "2b3a6936a0511970f668a818bfafead14be3edead6d67da39f591d36c8155906"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub17_V_300303_SM_120018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub17_V_300303_SM_120020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_121",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "526f1a16c0651d077aaefe0fcc119d41efb40931117ed8c3916fc8e3f56d3840"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "69bb2570835a76d5186b6c8235ef31141dcc19ee844b1943c8ad59584702b5d9"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "47118f6d9d6d8a93e1b9346eb7bd75bf237120f27fa71461fe02a9a3c00543a4"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "0cf991e3f8526e61d7ad08354dca891eb87111823278d01bde9dfcd99618dbad"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub17_V_300303_SM_121018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub17_V_300303_SM_121020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_80",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "6ee4e72b64ca85cf4cc78a174ff2b9efd7b513fd9a0b51103845cd41e11b5575"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "4be2b9ec163512105edd2eeac443764f0422a3ecbe237421568f7f54896d7e08"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "409055da1c8858fa06292dfb9e781553f4ec5dfa72d05ee7b7b1966a1d0b57eb"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "a9c01e18792a0147ef7904b19556f66e8955bce5dbc435ffce958acfdd31477a"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_80018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 0
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_80020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 0
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 336
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 0
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_86",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "ced93839e686e42bb5609469b80043203dfd1ba5631cd7903733a8f3934b9ae8"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "b3cfdb79f595839fcc22c5fc7a42c6a07c51b8450e55eff9bce2892f9058a17b"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "bd644a98541e8687a7624a3104f1463aedb90e32241eb27b4092fd93db08fb00"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "bcb4ed56c64498544a45487987ae96a9e21d188bfb7a7b67d1910cf4d326ca3f"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_86018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 0
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_86020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 0
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 336
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 0
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_87",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "b53525ee0a8a2c7f3c30a99ddd51d0aeae2133dc6db241fcd54460781c1aed93"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "e5f699e370e79e7cceef9025e23b84bb2b6a366f4dd2e786a5a35e7da7dd52c9"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "e5df84b4e72572c4b40f784c82decf4d29c364abd9d22bbeb66c3284ba830354"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "0e4db816a750bcff6313a8e250b053914acb011c5839e45df3bbc8bda28c3fc0"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_87018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 0
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_87020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 0
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 336
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 0
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_88",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "81ebc74c2634b4b85fffd032a4dd83435a24702f7522796d86b117ecb297ec02"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "31aaa94a1062f49e4fda1c1c7c775a344871f84729dffd057404f400516748ec"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "7cae0ed10f6f0b3ee8b6ab464b1aac6eb5265e31f23a07a7956a25374c6c476a"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "0e5e5351be46f291c1a49663d1554bb7101f82ed1c995d94bf854bd2ca4385bd"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_88018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 0
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_88020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 0
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 336
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 0
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_89",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "542f7e36d03566d87644acf075b16f97b2d59a3e465378c13a004ab9a65fc2da"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "d4896ce4dbfe0561f9b8d73cb9e3efd10249291203e318578cb15dac53f19852"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "accf98804993a2aa108cc3629642b344c7c48f4361b9103dd15a5363bbe27764"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "7eacdfd6a0324f3dac87558c495f2847bbd68717b43d1d971332f1f16fd1ae32"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_89018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 0
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_89020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 0
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 336
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 0
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  },
+  {
+    "architecture": "sm_90",
+    "compiler": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Fri_Apr_24_07:22:02_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.33\nBuild cuda_13.3.r13.3/compiler.37862127_0",
+    "upstream": "8cdf53c4435e94e06767a38b501485407db97b22",
+    "modules": {
+      "qwen3": {
+        "source": "qwen3.cubin",
+        "sha256": "04b8f9305893402ad7a35b1bab41906d9b85e7dd9883f231708b2d495e7638e2"
+      },
+      "elementwise": {
+        "source": "elementwise.cubin",
+        "sha256": "da195b2f27e8325f0d92110ccd16d2a87227f82a6b8613daebd1d6961ebaa948"
+      },
+      "sampling": {
+        "source": "sampling.cubin",
+        "sha256": "62c291fafab5086ccac74b6117a8b4473e3edc51aa5f52ca96419fa8272ced39"
+      },
+      "sample_glue": {
+        "source": "sample_glue.cubin",
+        "sha256": "a49cfee15be8e1d60a9417fa5919685100a500ec109b16234682704665703862"
+      }
+    },
+    "sampling": {
+      "sizes": {
+        "softmax": 304,
+        "topp": 324,
+        "minp": 2080,
+        "state_words": 776,
+        "radix_fixed": 2080
+      },
+      "entries": {
+        "MinPSamplingFromProbKernel": {
+          "entry": "_ZN10flashinfer8sampling26MinPSamplingFromProbKernelILj1024ELN3cub16_V_300303_SM_90018BlockScanAlgorithmE2ELNS3_20BlockReduceAlgorithmE2ELj4ELb1EfiEEvPT4_PfPT5_PbSA_fjPmmSC_mjj",
+          "static_shared": 1024
+        },
+        "TopPRenormProbKernel": {
+          "entry": "_ZN10flashinfer8sampling20TopPRenormProbKernelILj1024ELN3cub16_V_300303_SM_90020BlockReduceAlgorithmE2ELj4EfEEvPT2_S6_Pffj",
+          "static_shared": 1024
+        },
+        "RadixTopKRenormProbKernel_MultiCTA": {
+          "entry": "_ZN10flashinfer8sampling34RadixTopKRenormProbKernel_MultiCTAILj1024ELj4ELb0ELb1EfiEEvPT3_S3_PT4_jjjPNS0_13RadixRowStateEjj",
+          "static_shared": 1360
+        },
+        "OnlineSoftmaxFusedKernel": {
+          "entry": "_ZN10flashinfer8sampling24OnlineSoftmaxFusedKernelILj1024ELj4EfLb0EEEvPT1_S3_S3_S2_j",
+          "static_shared": 1024
+        }
+      },
+      "revision": "d84335d8c54e0c8f9f7e22faa15c7e34a58abf94"
+    }
+  }
+]

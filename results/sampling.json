@@ -1,0 +1,50 @@
+{
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "date": "2026-11-08",
+  "cases": {
+    "vocabularies": [
+      32,
+      1024,
+      151936
+    ],
+    "mixed_parameter_rows": 65,
+    "position_offsets": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "distribution_draws": 4096,
+    "distribution_chi_square": 7.3559,
+    "graph_replay": true,
+    "seed_replay": true,
+    "greedy_ab_bit_identical": true
+  },
+  "target": {
+    "sms": 70,
+    "shared_mem": 101376
+  },
+  "cli_seed": 123,
+  "cli_replayed_tokens": [
+    220,
+    20,
+    11931,
+    11,
+    8471,
+    448,
+    364,
+    34,
+    6,
+    323,
+    10335,
+    448,
+    364,
+    56,
+    6,
+    481
+  ]
+}

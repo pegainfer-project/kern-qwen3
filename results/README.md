@@ -1,4 +1,7 @@
-# Validation record
+# Initial validation record
+
+This records the greedy baseline at commit `89eee6a`. The subsequent sampling
+extension is validated in [sampling.md](sampling.md).
 
 Date: 2026-11-08. Hardware: **RTX 5070 Ti × 1**, 16 GB, SM120, 70 SMs.
 CUDA compiler: 13.3.33. Driver API: 13.3. Runtime revision:

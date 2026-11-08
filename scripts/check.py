@@ -13,12 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def check(kern):
     config = tomllib.loads((ROOT / "kernels.toml").read_text())
-    upstream = config["upstreams"]["pegainfer"]
-    actual = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=ROOT / upstream["path"], text=True
-    ).strip()
-    if actual != upstream["revision"]:
-        raise ValueError(f"upstream mismatch: expected {upstream['revision']}, got {actual}")
+    for name, upstream in config["upstreams"].items():
+        actual = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT / upstream["path"], text=True
+        ).strip()
+        if actual != upstream["revision"]:
+            raise ValueError(f"{name} mismatch: expected {upstream['revision']}, got {actual}")
     records = sorted((ROOT / "build").glob("sm_*/build.json"))
     if not records:
         raise ValueError("no builds found; run scripts/build.py first")

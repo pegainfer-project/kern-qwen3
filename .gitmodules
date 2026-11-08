@@ -1,3 +1,6 @@
 [submodule "third_party/pegainfer"]
 	path = third_party/pegainfer
 	url = https://github.com/pegainfer-project/pegainfer.git
+[submodule "third_party/flashinfer"]
+	path = third_party/flashinfer
+	url = https://github.com/flashinfer-ai/flashinfer.git

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate a dense BF16 Qwen3 manifest from checkpoint geometry and built cubins.
 
-Single-GPU, greedy decoding, chunked prefill and batched decode. KV pages contain
+Single-GPU sampling, chunked prefill and batched decode. KV pages contain
 16 slots, each [K/V, kv_heads, head_dim]. No model knowledge enters kern.
 """
 
@@ -13,7 +13,7 @@ import math
 import shutil
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+import sampling
 
 
 def geometry(config, context):
@@ -50,7 +50,7 @@ def geometry(config, context):
     return config
 
 
-def manifest(config, modules, *, context=4096, tokens=256, seqs=32):
+def manifest(config, modules, sampling_metadata, sampling_target, *, context=4096, tokens=256, seqs=32):
     c = geometry(config, context)
     if tokens < seqs or seqs < 1 or tokens > context:
         raise ValueError("expected 1 <= max-seqs <= max-tokens <= context")
@@ -60,7 +60,7 @@ def manifest(config, modules, *, context=4096, tokens=256, seqs=32):
     b, s, i = lambda x: {"buf": x}, lambda x: {"state": x}, lambda x: {"i32": x}
     rows = {"var": "tokens"}
     groups = {"var": "seqs"}
-    buffers = {}
+    buffers = sampling.fills()
 
     def buffer(name, dtype, shape, kind="workspace", **kwargs):
         buffers[name] = dict(dtype=dtype, shape=shape, kind=kind, **kwargs)
@@ -180,7 +180,7 @@ def manifest(config, modules, *, context=4096, tokens=256, seqs=32):
         [{"ceil_div": [{"mul": ["tokens", f]}, 256]}, 1, 1],
         module="elementwise",
     )
-    op("argmax", "argmax", ["in buffer<bf16>", "out buffer<i64>"], ["seqs", 1, 1], extra=[i(vocab)])
+    ops["sample"] = sampling.op(vocab, seqs, sampling_metadata, sampling_target)
 
     calls = []
 
@@ -234,7 +234,7 @@ def manifest(config, modules, *, context=4096, tokens=256, seqs=32):
     # Reuse the embedding buffer for tied checkpoints rather than allocating it twice.
     head_weight = b(head) if c.get("tie_word_embeddings") else weight(head, [vocab, h])
     call("lm_head", "gemm", b("x"), head_weight, b("logits"), groups, i(vocab), i(h))
-    call("sample", "argmax", b("logits"), b("next_token"))
+    call("sample", "sample", *sampling.args(seq_lens="lengths"))
     return {
         "schema_version": 7,
         "model": "qwen3",
@@ -252,10 +252,14 @@ def manifest(config, modules, *, context=4096, tokens=256, seqs=32):
     }
 
 
-def generate(checkpoint, kernels, out, context, tokens, seqs):
+def generate(checkpoint, kernels, out, context, tokens, seqs, gpu=0, sampling_sms=None, sampling_smem=None):
     config = json.loads((checkpoint / "config.json").read_text())
     build = json.loads((kernels / "build.json").read_text())
-    m = manifest(config, build["modules"], context=context, tokens=tokens, seqs=seqs)
+    target = sampling.target(build["architecture"], gpu, sampling_sms, sampling_smem)
+    m = manifest(
+        config, build["modules"], build["sampling"], target, context=context, tokens=tokens, seqs=seqs
+    )
+    build["sampling_target"] = target
     out.mkdir(parents=True, exist_ok=True)
     bundle = out / "kernels"
     bundle.mkdir(exist_ok=True)
@@ -283,5 +287,18 @@ if __name__ == "__main__":
     parser.add_argument("--context", type=int, default=4096)
     parser.add_argument("--max-tokens", type=int, default=256)
     parser.add_argument("--max-seqs", type=int, default=32)
+    parser.add_argument("--gpu", type=int, default=0, help="deployment GPU queried for sampling resources")
+    parser.add_argument("--sampling-sms", type=int, help="deployment SM count for offline generation")
+    parser.add_argument("--sampling-smem", type=int, help="deployment opt-in shared memory bytes per block")
     args = parser.parse_args()
-    generate(args.checkpoint, args.kernels, args.out, args.context, args.max_tokens, args.max_seqs)
+    generate(
+        args.checkpoint,
+        args.kernels,
+        args.out,
+        args.context,
+        args.max_tokens,
+        args.max_seqs,
+        args.gpu,
+        args.sampling_sms,
+        args.sampling_smem,
+    )
