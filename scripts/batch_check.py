@@ -70,7 +70,7 @@ def check(args):
         for step in range(3):
             positions = torch.tensor([len(prefixes[j]) + step for j in range(groups)], device="cuda")
             ids = current[:groups].clone()
-            rt.run("decode_batch", stage(list(range(groups)), ids, positions, list(range(groups + 1))))
+            rt.run("decode", stage(list(range(groups)), ids, positions, list(range(groups + 1))))
             batch = buffers["logits"][:groups].float().clone()
             next_ids = buffers["next_token"][:groups].clone()
             individual = []
@@ -103,10 +103,10 @@ def check(args):
     buffers["seed"].copy_(torch.arange(maximum, device="cuda") + 123)
     positions = torch.tensor([len(prefixes[j]) + 3 for j in range(maximum)], device="cuda")
     variables = stage(list(range(maximum)), current, positions, list(range(maximum + 1)))
-    rt.run("decode_batch", variables)
+    rt.run("decode", variables)
     sampled = buffers["next_token"][:maximum].clone()
     scores = buffers["logits"][:maximum].float().clone()
-    rt.run("decode_batch", variables)
+    rt.run("decode", variables)
     torch.testing.assert_close(buffers["next_token"][:maximum], sampled, rtol=0, atol=0)
     # The complete chain's distribution and filter boundaries are checked in test_sampling.py.
     selected = scores.gather(1, sampled[:, None]).squeeze(1)

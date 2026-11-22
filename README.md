@@ -5,7 +5,7 @@ checkpoint-driven manifests, CUDA sources, a pinned pegainfer submodule, and
 numerical gates. Model geometry and KV layout live here; kern is unchanged.
 
 The initial implementation supports single-GPU greedy and stochastic generation, chunked prefill,
-and batched decode. Qwen3-4B has been run on one RTX 5070 Ti. Other dense Qwen3
+and batched decode. Qwen3-4B has been run on an RTX 5070 Ti and an RTX 3090. Other dense Qwen3
 geometries are read from their checkpoint's `config.json`; they have not yet passed
 a full-model numerical gate here. MoE, quantized checkpoints, attention bias,
 sliding-window attention, and RoPE scaling are rejected.
@@ -18,13 +18,14 @@ revision recorded in `kernels.toml`:
 
 ```sh
 cargo install --git https://github.com/pegainfer-project/kern \
-  --rev 248e7aa3ab782d9c1cc80c4e3519dd2368fe45d1 --locked kern-run
+  --rev 86e761aca2118bbe5b5f9dc6e5156f86894a428d --locked kern-run
 
 git submodule update --init third_party/pegainfer third_party/flashinfer
 git -C third_party/pegainfer submodule update --init pegainfer-kernels/third_party/flashinfer
-uv run python scripts/build.py --sm sm_120 --nvcc /usr/local/cuda/bin/nvcc
+SM=sm_86  # Use the compute capability of your GPU.
+uv run python scripts/build.py --sm "$SM" --nvcc /usr/local/cuda/bin/nvcc
 uv run python scripts/gen.py --checkpoint /path/to/Qwen3-4B \
-  --kernels build/sm_120 --out out/qwen3-4b \
+  --kernels "build/$SM" --out out/qwen3-4b \
   --context 4096 --max-tokens 256 --max-seqs 32
 kern verify out/qwen3-4b/model.json
 kern run --config out/qwen3-4b/kern.toml \
@@ -40,7 +41,8 @@ the matching bundle on each machine.
 
 | Architecture | Build with CUDA 13.3 | Runtime / numerical validation |
 |---|---|---|
-| SM80, SM86, SM87, SM88, SM89 | Passed | Not run |
+| SM80, SM87, SM88, SM89 | Passed | Not run |
+| SM86 | Passed | Qwen3-4B, [RTX 3090](results/sm86.md) (`kern run`, batched decode, and Transformers accuracy) |
 | SM90, SM100, SM103, SM110 | Passed | Not run |
 | SM120 | Passed | Qwen3-4B, RTX 5070 Ti |
 | SM121 | Passed | Not run |
@@ -114,7 +116,8 @@ Qwen3-4B bundle configured for 40K context and 1024-token chunks. The checkpoint
 own limit is enforced. The 40K configuration is not a completed long-context
 numerical or serving gate; measured attention correctness currently covers 8K.
 
-With kern-serve built from the runtime repository:
+Build `kern-serve` from the `kern` revision recorded in `kernels.toml`.
+Run the server with the generated bundle.
 
 ```sh
 kern-serve --manifest out/qwen3-4b/model.json --kernels out/qwen3-4b/kernels \

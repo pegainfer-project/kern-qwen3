@@ -1,6 +1,6 @@
 """kern's FlashInfer sampling chain, with resource limits from the target GPU.
 
-Adapted from kern/tools/sampling.py at the runtime revision in kernels.toml.
+Adapted from kern/tools/sampling.py at kern revision 248e7aa3ab782d9c1cc80c4e3519dd2368fe45d1.
 Template symbols and storage sizes come from the built cubin and CUB headers.
 """
 

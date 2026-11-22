@@ -254,8 +254,7 @@ def manifest(
         "ops": ops,
         "programs": {
             "prefill": {"batch": {"groups": 1, "rows": "tokens"}, "calls": prefill},
-            "decode": {"batch": {"groups": 1, "rows": 1}, "graph": True, "calls": calls},
-            "decode_batch": {"batch": {"groups": seqs, "rows": 1}, "graph": True, "calls": calls},
+            "decode": {"batch": {"groups": seqs, "rows": 1}, "graph": True, "calls": calls},
         },
     }
 
