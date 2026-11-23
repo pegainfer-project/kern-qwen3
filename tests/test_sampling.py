@@ -40,6 +40,10 @@ class Sampler:
         directory = ROOT / f"build/sm_{major}{minor}"
         build = json.loads((directory / "build.json").read_text())
         target = sampling.target(build["architecture"])
+        sample = sampling.op(vocab, rows, build["sampling"], target)
+        modules = {
+            launch["module"]: build["modules"][launch["module"]] for launch in sample["impl"]["launches"]
+        }
         buffers = sampling.fills()
         buffers.update(
             {
@@ -54,8 +58,8 @@ class Sampler:
             "vars": {"seqs": {"max": rows}},
             "states": {},
             "buffers": buffers,
-            "modules": {name: value for name, value in build["modules"].items() if name != "elementwise"},
-            "ops": {"sample": sampling.op(vocab, rows, build["sampling"], target)},
+            "modules": modules,
+            "ops": {"sample": sample},
             "programs": {"sample": {"calls": [{"op": "sample", "args": sampling.args(seq_lens="lengths")}]}},
         }
         with tempfile.TemporaryDirectory() as temporary:

@@ -8,5 +8,5 @@ context = [128, 512]
 
 [[sweep]]
 groups = [1]
-rows = [16, 128]
+chunk = [16, 128]
 context = [0]
